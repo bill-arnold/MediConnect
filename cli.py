@@ -1,56 +1,52 @@
 # cli.py
 import click
-from models import Doctor, Patient, Disease, DoctorPatient  # Import DoctorPatient model
+from models import Doctor, Patient, Disease, DoctorPatient
 from database import Base, engine, SessionLocal
 
 @click.group()
 def cli():
     pass
 
-@click.command(name="init-db")  # Update the command name
+@click.command(name="init-db")
 def init_db():
     """Initialize the database."""
     click.echo("Creating tables...")
     Base.metadata.create_all(bind=engine)
     click.echo("Database initialized.")
 
-@click.command(name="list-doctors")  # Update the command name
-def list_doctors():
-    """List all doctors."""
-    session = SessionLocal()
-    doctors = session.query(Doctor).all()
-    for doctor in doctors:
-        click.echo(f"Doctor ID: {doctor.id}, Name: {doctor.name}, Specialization: {doctor.specialization}")
+# ... (your existing commands)
 
-@click.command(name="list-patients")  # Update the command name
-def list_patients():
-    """List all patients."""
+@click.command(name="add-doctor")
+@click.option("--name", prompt="Doctor's name", help="Name of the doctor")
+@click.option("--specialization", prompt="Specialization", help="Specialization of the doctor")
+def add_doctor(name, specialization):
+    """Add a new doctor."""
     session = SessionLocal()
-    patients = session.query(Patient).all()
-    for patient in patients:
-        click.echo(f"Patient ID: {patient.id}, Name: {patient.name}, Age: {patient.age}")
+    doctor = Doctor(name=name, specialization=specialization)
+    session.add(doctor)
+    session.commit()
+    click.echo(f"Doctor {name} added successfully with ID: {doctor.id}")
+    session.close()
 
-@click.command(name="list-diseases")  # Update the command name
-def list_diseases():
-    """List all diseases."""
+@click.command(name="add-patient")
+@click.option("--name", prompt="Patient's name", help="Name of the patient")
+@click.option("--age", prompt="Patient's age", type=int, help="Age of the patient")
+def add_patient(name, age):
+    """Add a new patient."""
     session = SessionLocal()
-    diseases = session.query(Disease).all()
-    for disease in diseases:
-        click.echo(f"Disease ID: {disease.id}, Name: {disease.name}, Severity: {disease.severity}")
+    patient = Patient(name=name, age=age)
+    session.add(patient)
+    session.commit()
+    click.echo(f"Patient {name} added successfully with ID: {patient.id}")
+    session.close()
 
-@click.command(name="list-doctor-patient")  # New command to list doctor_patient table
-def list_doctor_patient():
-    """List all entries in doctor_patient table."""
-    session = SessionLocal()
-    doctor_patients = session.query(DoctorPatient).all()
-    for dp in doctor_patients:
-        click.echo(f"DoctorPatient ID: {dp.id}, Doctor ID: {dp.doctor_id}, Patient ID: {dp.patient_id}, Disease ID: {dp.disease_id}")
+# Similar commands for adding diseases and doctor-patient relationships...
 
+# Add the new commands to the CLI
 cli.add_command(init_db)
-cli.add_command(list_doctors)
-cli.add_command(list_patients)
-cli.add_command(list_diseases)
-cli.add_command(list_doctor_patient)  
+cli.add_command(add_doctor)
+cli.add_command(add_patient)
+# Add similar lines for add-disease and add-doctor-patient
 
 if __name__ == "__main__":
     cli()
