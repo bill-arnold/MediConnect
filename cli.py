@@ -1,3 +1,4 @@
+#!/home/bill/Development/MediConnect/cli.py
 
 import click
 from sqlalchemy.orm import Session
@@ -13,6 +14,7 @@ def init_db():
 # Add a new doctor
 @click.command("add-doctor")
 def add_doctor():
+    click.echo('Add doctor information...')
     name = click.prompt("Doctor's name")
     specialization = click.prompt("Specialization")
     experience = click.prompt("Experience (years)", type=int)
@@ -79,27 +81,46 @@ def add_doctor_patient():
 
     click.echo("Doctor-Patient entry added successfully")
 
-# List all entries in the doctor_patient table
+# List all entries in the doctor_patient table with details
 @click.command("list-doctor-patient")
 def list_doctor_patient():
     db = SessionLocal()
     doctor_patient_entries = db.query(DoctorPatient).all()
+    
+    for entry in doctor_patient_entries:
+        # Fetch related objects
+        doctor = db.query(Doctor).filter_by(id=entry.doctor_id).first()
+        patient = db.query(Patient).filter_by(id=entry.patient_id).first()
+        disease = db.query(Disease).filter_by(id=entry.disease_id).first()
+
+        # Display entry details
+        click.echo(f"Doctor: {doctor.name}, Patient: {patient.name}, Disease: {disease.name}")
+
     db.close()
 
-    for entry in doctor_patient_entries:
-        click.echo(entry.__dict__)
-
-# Create the CLI instance and add commands
-@click.group()
-def cli():
-    pass
-
-cli.add_command(init_db)
-cli.add_command(add_doctor)
-cli.add_command(add_patient)
-cli.add_command(add_disease)
-cli.add_command(add_doctor_patient)
-cli.add_command(list_doctor_patient)
-
 if __name__ == "__main__":
-    cli()
+    while True:
+        click.echo(click.style('************welcome to MediConnect*****'))
+        click.echo('************What services would you like today?************')
+        click.echo('1: Add doctor' )
+        click.echo('2: Add patient' )
+        click.echo('3: Add disease' )
+        click.echo('4: Add doctor_patient')
+        click.echo('5: List doctor_patient')
+        click.echo('6: Exit')
+
+        option = click.prompt("Choose an option", type=int)
+        if option == 1:
+            add_doctor()
+        elif option == 2:
+            add_patient()
+        elif option == 3:
+            add_disease()
+        elif option == 4:
+            add_doctor_patient()
+        elif option == 5:
+            list_doctor_patient()
+        elif option == 6:
+            break
+        else:
+            click.echo('Choose a valid option, please.')
