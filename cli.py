@@ -100,14 +100,14 @@ def list_doctor_patient():
 
 if __name__ == "__main__":
     while True:
-        click.echo(click.style('************welcome to MediConnect*****'))
-        click.echo('************What services would you like today?************')
-        click.echo('1: Add doctor' )
-        click.echo('2: Add patient' )
-        click.echo('3: Add disease' )
-        click.echo('4: Add doctor_patient')
-        click.echo('5: List doctor_patient')
-        click.echo('6: Exit')
+        click.echo(click.style('🏥 ************ Welcome to MediConnect ************ 🏥', fg='red'))
+        click.echo('👩‍⚕️ ************ What services would you like today? ************ 👨‍⚕️')
+        click.echo('1: Add doctor 🩺')
+        click.echo('2: Add patient 🤰')
+        click.echo('3: Add disease 🤒')
+        click.echo('4: Add doctor_patient 👩‍⚕️👨‍⚕️')
+        click.echo('5: List doctor_patient 📋')
+        click.echo('6: Exit 🚪')
 
         option = click.prompt("Choose an option", type=int)
         if option == 1:
