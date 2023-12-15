@@ -1,4 +1,5 @@
-#!/home/bill/Development/MediConnect/cli.py
+#!/usr/bin/env python
+
 
 import click
 from sqlalchemy.orm import Session
@@ -6,13 +7,13 @@ from database import SessionLocal, engine
 from models import Base, Doctor, Patient, Disease, DoctorPatient
 
 # Initialize the database
-@click.command("init-db")
+#@click.command("init-db")
 def init_db():
     Base.metadata.create_all(bind=engine)
     click.echo("Database initialized")
 
 # Add a new doctor
-@click.command("add-doctor")
+#@click.command("add-doctor")
 def add_doctor():
     click.echo('Add doctor information...')
     name = click.prompt("Doctor's name")
@@ -31,7 +32,7 @@ def add_doctor():
     click.echo("Doctor added successfully")
 
 # Add a new patient
-@click.command("add-patient")
+#@click.command("add-patient")
 def add_patient():
     name = click.prompt("Patient's name")
     age = click.prompt("Age", type=int)
@@ -49,7 +50,7 @@ def add_patient():
     click.echo("Patient added successfully")
 
 # Add a new disease
-@click.command("add-disease")
+#@click.command("add-disease")
 def add_disease():
     name = click.prompt("Disease name")
     severity = click.prompt("Severity")
@@ -66,7 +67,7 @@ def add_disease():
     click.echo("Disease added successfully")
 
 # Add a new doctor_patient entry
-@click.command("add-doctor-patient")
+#@click.command("add-doctor-patient")
 def add_doctor_patient():
     doctor_id = click.prompt("Doctor's ID", type=int)
     patient_id = click.prompt("Patient's ID", type=int)
@@ -82,7 +83,7 @@ def add_doctor_patient():
     click.echo("Doctor-Patient entry added successfully")
 
 # List all entries in the doctor_patient table with details
-@click.command("list-doctor-patient")
+#@click.command("list-doctor-patient")
 def list_doctor_patient():
     db = SessionLocal()
     doctor_patient_entries = db.query(DoctorPatient).all()
@@ -99,14 +100,15 @@ def list_doctor_patient():
     db.close()
 
 if __name__ == "__main__":
-    while True:
+    exit = False 
+    while  exit == False:
         click.echo(click.style('🏥 ************ Welcome to MediConnect ************ 🏥', fg='red'))
         click.echo('👩‍⚕️ ************ What services would you like today? ************ 👨‍⚕️')
-        click.echo('1: Add doctor 🩺')
-        click.echo('2: Add patient 🤰')
-        click.echo('3: Add disease 🤒')
-        click.echo('4: Add doctor_patient 👩‍⚕️👨‍⚕️')
-        click.echo('5: List doctor_patient 📋')
+        click.echo('1: Add doctor ')
+        click.echo('2: Add patient ')
+        click.echo('3: Add disease ')
+        click.echo('4: Add doctor_patient ')
+        click.echo('5: List doctor_patient ')
         click.echo('6: Exit 🚪')
 
         option = click.prompt("Choose an option", type=int)
@@ -121,6 +123,6 @@ if __name__ == "__main__":
         elif option == 5:
             list_doctor_patient()
         elif option == 6:
-            break
+            exit=True
         else:
-            click.echo('Choose a valid option, please.')
+            click.prompt('Choose a valid option, please.')
